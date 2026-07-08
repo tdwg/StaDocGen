@@ -40,17 +40,15 @@ ltc_df = ltc_df.drop_duplicates(subset='term_localName', keep='first')
 print(f'{duplicate_count} duplicate term records removed, {len(ltc_df)} unique terms remain')
 
 # Rename Columns
-ltc_df.rename(columns={'term_localName': 'term_local_name',
-                       'tdwgutility_required': 'is_required',
-                       'tdwgutility_repeatable': 'is_repeatable'}, inplace=True)
+ltc_df = ltc_df.rename(columns={'term_localName': 'term_local_name',
+                                'tdwgutility_required': 'is_required',
+                                'tdwgutility_repeatable': 'is_repeatable'})
 
 # Terms are class-independent after deduplication; drop the organizing class
 ltc_df = ltc_df.drop(columns=['tdwgutility_organizedInClass'])
 # Fix boolean values
-ltc_df['is_required'] = ltc_df['is_required'].replace({'Yes': 'True'})
-ltc_df['is_required'] = ltc_df['is_required'].replace({'No': 'False'})
-ltc_df['is_repeatable'] = ltc_df['is_repeatable'].replace({'Yes': 'True'})
-ltc_df['is_repeatable'] = ltc_df['is_repeatable'].replace({'No': 'False'})
+ltc_df = ltc_df.replace({'is_required': {'Yes': 'True', 'No': 'False'},
+                         'is_repeatable': {'Yes': 'True', 'No': 'False'}})
 # Resave
 ltc_df.to_csv(term_csv, index=False, encoding='utf8')
 
@@ -59,9 +57,9 @@ ltc_df.to_csv(term_csv, index=False, encoding='utf8')
 # Get namespaces file
 ns_df = pd.read_csv(ns_csv, encoding="utf8")
 # Rename namespaces columns
-ns_df.rename(columns={'curie': 'namespace', 'value': 'namespace_iri'}, inplace=True)
+ns_df = ns_df.rename(columns={'curie': 'namespace', 'value': 'namespace_iri'})
 # Add colon to namespace for merger with terms csv
-ns_df['namespace'] = ns_df['namespace'].astype(str) + ':'
+ns_df = ns_df.assign(namespace=ns_df['namespace'].astype(str) + ':')
 
 if 'ltc:' not in ns_df.values:
     ltc_row = {"namespace": "ltc:", "namespace_iri": "http://rs.tdwg.org/ltc/terms/"}
@@ -75,17 +73,18 @@ ltc_df = pd.read_csv(term_csv, encoding="utf8")
 ltc_df = pd.merge(ltc_df, ns_df[['namespace', 'namespace_iri']], on='namespace', how='inner')
 
 # Create Term IRI
-ltc_df['term_iri'] = ltc_df['namespace_iri'].astype(str) + ltc_df['term_local_name']
-ltc_df['term_ns_name'] = ltc_df['namespace'].astype(str) + ltc_df['term_local_name']
-ltc_df['term_version_iri'] = 'http://rs.tdwg.org/ltc/terms/' + ltc_df["term_local_name"] + '-' + ltc_df["term_modified"]
+ltc_df = ltc_df.assign(
+    term_iri=ltc_df['namespace_iri'].astype(str) + ltc_df['term_local_name'],
+    term_ns_name=ltc_df['namespace'].astype(str) + ltc_df['term_local_name'],
+    term_version_iri='http://rs.tdwg.org/ltc/terms/' + ltc_df['term_local_name'] + '-' + ltc_df['term_modified'])
 
-ltc_df.sort_values(by='term_local_name', axis='index', inplace=True, na_position='last')
+ltc_df = ltc_df.sort_values(by='term_local_name', axis='index', na_position='last')
 
 # Data cleanup
-ltc_df['examples'] = ltc_df['examples'].str.replace('"', '')
-ltc_df['definition'] = ltc_df['definition'].str.replace('"', '')
-ltc_df['usage'] = ltc_df['usage'].str.replace('"', '')
-ltc_df['notes'] = ltc_df['notes'].str.replace('"', '')
+ltc_df = ltc_df.assign(examples=ltc_df['examples'].str.replace('"', ''),
+                       definition=ltc_df['definition'].str.replace('"', ''),
+                       usage=ltc_df['usage'].str.replace('"', ''),
+                       notes=ltc_df['notes'].str.replace('"', ''))
 
 # Resave terms file
 ltc_df.to_csv(term_csv, index=False, encoding='utf8')
@@ -93,7 +92,7 @@ ltc_df.to_csv(term_csv, index=False, encoding='utf8')
 # ------------------------------------------------------------
 # Datatypes
 dt_df = pd.read_csv(dt_csv, encoding='utf8')
-dt_df.rename(columns={'term_localName': 'term_local_name'}, inplace=True)
+dt_df = dt_df.rename(columns={'term_localName': 'term_local_name'})
 # Datatypes are class-independent: they repeat per organizing class but are
 # identical per term, so drop the class column and deduplicate on
 # term_local_name to keep the terms merge one-to-one

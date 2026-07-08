@@ -12,17 +12,17 @@ sssom_csv = str(path)+'/data/output/ltc-sssom.csv'
 shutil.copy(sssom_src, sssom_csv)
 
 sssom_df = pd.read_csv(sssom_csv, encoding='utf8')
+sssom_df = sssom_df.rename(columns={'term_uri': 'term_iri'})
 # Create Term Column with Machine-readable version of the term
-sssom_df['term_local_name'] = sssom_df['subject_id']
-sssom_df.rename(columns={'term_uri': 'term_iri'}, inplace=True)
-sssom_df['term_local_name'] = sssom_df['term_local_name'].str.replace('http://rs.tdwg.org/ltc/terms/', '')
-sssom_df['term_local_name'] = sssom_df['term_local_name'].str.replace('http://purl.org/dc/terms/', '')
-sssom_df['term_local_name'] = sssom_df['term_local_name'].str.replace('http://rs.tdwg.org/dwc/terms/', '')
-sssom_df['term_local_name'] = sssom_df['term_local_name'].str.replace('https://schema.org/', '')
-sssom_df['term_local_name'] = sssom_df['term_local_name'].str.replace('http://rs.tdwg.org/chrono/terms/', '')
-
-# Create Term URI Column
-sssom_df['term_iri'] = sssom_df['subject_id']
+# and the Term URI Column
+sssom_df = sssom_df.assign(
+    term_local_name=sssom_df['subject_id']
+        .str.replace('http://rs.tdwg.org/ltc/terms/', '')
+        .str.replace('http://purl.org/dc/terms/', '')
+        .str.replace('http://rs.tdwg.org/dwc/terms/', '')
+        .str.replace('https://schema.org/', '')
+        .str.replace('http://rs.tdwg.org/chrono/terms/', ''),
+    term_iri=sssom_df['subject_id'])
 
 # Eliminate duplicate mappings: the same term/predicate/object mapping can be
 # recorded once per organizing class; the first occurrence is kept

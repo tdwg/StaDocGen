@@ -35,12 +35,12 @@ for yf in glob.glob(translations_yml, recursive=True):
 
 
 source_df = pd.read_csv(translations_csv, encoding="utf8", skip_blank_lines=True)
+source_df = source_df.rename(columns={'term_localName': 'term_local_name'})
+source_df = source_df.sort_values(by='term_local_name', axis='index', na_position='last')
 for k in meta['Languages']:
 
     # Get language tag and filter columns in source translation file
     lang = k['code']
-    source_df.rename(columns={'term_localName': 'term_local_name'}, inplace=True)
-    source_df.sort_values(by='term_local_name', axis='index', inplace=True, na_position='last')
     patterns = [lang+'$', 'term_local_name']
     combined_pattern = reduce(lambda x, y: f'{x}|{y}', patterns)
     lang_df = source_df.filter(regex=combined_pattern)
