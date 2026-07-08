@@ -220,10 +220,10 @@ def quickReference():
 
     # Quick Reference Main
     df = pd.read_csv('data/output/ltc-termlist.csv', encoding='utf8')
-    df['examples'] = df['examples'].str.replace(r'"', '')
-    df['definition'] = df['definition'].str.replace(r'"', '')
-    df['usage'] = df['usage'].str.replace(r'"', '')
-    df['notes'] = df['notes'].str.replace(r'"', '')
+    df = df.assign(examples=df['examples'].str.replace(r'"', ''),
+                   definition=df['definition'].str.replace(r'"', ''),
+                   usage=df['usage'].str.replace(r'"', ''),
+                   notes=df['notes'].str.replace(r'"', ''))
 
     # Alphabetical order, one row per term
     quick_ref_df = df.fillna(-1).sort_values(by='term_local_name', key=lambda s: s.str.lower())
