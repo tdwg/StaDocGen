@@ -16,7 +16,7 @@
                 <tbody>
                 {% for idx, v in requiredClasses.iterrows() %}
                     <tr>
-                        <td><a href="#{{ v['compound_name'] }}">{{ v['namespace'] }}{{ v['term_local_name'] }}</a></td>
+                        <td><a href="#{{ v['term_local_name'] }}">{{ v['namespace'] }}{{ v['term_local_name'] }}</a></td>
                         <td>{{ v['label'] }}</td>
                         <td>{{ v['is_required'] }}</td>
                     </tr>
@@ -39,7 +39,7 @@
                 <tbody>
                     {% for idx, v in requiredTerms.iterrows() %}
                         <tr>
-                            <td><a href="#{{ v['compound_name'] }}">{{ v['namespace'] }}{{ v['term_local_name'] }}</a></td>
+                            <td><a href="#{{ v['term_local_name'] }}">{{ v['namespace'] }}{{ v['term_local_name'] }}</a></td>
                             <td>{{ v['label'] }}</td>
                             <td>{{ v['class_name'] }}</td>
                             <td>{{ v['is_required'] }}</td>

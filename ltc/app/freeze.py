@@ -123,10 +123,12 @@ def terms_fr():
     sssom_df = pd.read_csv(sssom_csv, encoding='utf-8')
 
     # Merge SSSOM Mappings with Terms
+    # Terms are unique on term_local_name (see process_terms.py); mappings
+    # repeated across organizing classes are deduplicated before the merge
     terms_skos_df = pd.merge(
-        terms_df, sssom_df[['compound_name', 'predicate_label', 'object_id', 'object_category', 'object_label',
-                            'mapping_justification' ]],
-        on=['compound_name'], how='left'
+        terms_df, sssom_df[['term_local_name', 'predicate_label', 'object_id', 'object_category', 'object_label',
+                            'mapping_justification' ]].drop_duplicates(),
+        on=['term_local_name'], how='left'
     )
 
     terms = terms_skos_df.sort_values(by=['class_name','term_local_name'])
@@ -135,7 +137,7 @@ def terms_fr():
     ltcCls = terms_df['class_name'].dropna().unique()
 
     # Terms by Class
-    grpdict2 = terms_df.groupby('class_name')[['term_ns_name', 'term_local_name', 'namespace', 'compound_name','term_version_iri','term_modified']].apply(
+    grpdict2 = terms_df.groupby('class_name')[['term_ns_name', 'term_local_name', 'namespace', 'term_version_iri','term_modified']].apply(
         lambda g: list(map(tuple, g.values.tolist()))).to_dict()
     termsByClass = []
 
@@ -190,9 +192,11 @@ def terms():
     sssom_df = pd.read_csv(sssom_csv, encoding='utf-8')
 
     # Merge SSSOM Mappings with Terms
+    # Terms are unique on term_local_name (see process_terms.py); mappings
+    # repeated across organizing classes are deduplicated before the merge
     terms_skos_df = pd.merge(
-        terms_df, sssom_df[['compound_name', 'predicate_label', 'object_id', 'object_category', 'object_label', 'mapping_justification' ]],
-        on=['compound_name'], how='left'
+        terms_df, sssom_df[['term_local_name', 'predicate_label', 'object_id', 'object_category', 'object_label', 'mapping_justification' ]].drop_duplicates(),
+        on=['term_local_name'], how='left'
     )
 
     terms = terms_skos_df.sort_values(by=['class_name','term_local_name'])
@@ -201,7 +205,7 @@ def terms():
     ltcCls = terms_df['class_name'].dropna().unique()
 
     # Terms by Class
-    grpdict2 = terms_df.groupby('class_name')[['term_ns_name', 'term_local_name', 'namespace', 'compound_name','term_version_iri','term_modified']].apply(
+    grpdict2 = terms_df.groupby('class_name')[['term_ns_name', 'term_local_name', 'namespace', 'term_version_iri','term_modified']].apply(
         lambda g: list(map(tuple, g.values.tolist()))).to_dict()
     termsByClass = []
 
@@ -246,7 +250,7 @@ def quickReference():
     # Group by Class
     grpdict = df.fillna(-1).groupby('class_name')[['namespace', 'term_local_name', 'label', 'definition',
                                                    'usage', 'notes', 'examples', 'rdf_type', 'class_name',
-                                                   'is_required', 'is_repeatable', 'compound_name',
+                                                   'is_required', 'is_repeatable',
                                                    'datatype', 'term_ns_name', 'term_iri', 'term_version_iri','term_modified']].apply(
         lambda g: list(map(tuple, g.values.tolist()))).to_dict()
     grplists = []
@@ -258,7 +262,7 @@ def quickReference():
 
     # Required values
     terms_df = df[['namespace', 'term_local_name', 'label', 'class_name',
-                   'is_required', 'rdf_type', 'compound_name']].sort_values(by=['class_name'])
+                   'is_required', 'rdf_type']].sort_values(by=['class_name'])
 
     required_df = terms_df.loc[(terms_df['is_required'] == True) &
                                (terms_df['rdf_type'] == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property')]
