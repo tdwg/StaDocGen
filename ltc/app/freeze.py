@@ -225,22 +225,12 @@ def quickReference():
     df['usage'] = df['usage'].str.replace(r'"', '')
     df['notes'] = df['notes'].str.replace(r'"', '')
 
-    # Group by Class
-    grpdict = df.fillna(-1).groupby('class_name')[['namespace', 'term_local_name', 'label', 'definition',
-                                                   'usage', 'notes', 'examples', 'rdf_type', 'class_name',
-                                                   'is_required', 'is_repeatable',
-                                                   'datatype', 'term_ns_name', 'term_iri', 'term_version_iri','term_modified']].apply(
-        lambda g: list(map(tuple, g.values.tolist()))).to_dict()
-    grplists = []
-    for i in grpdict:
-        grplists.append({
-            'class': i,
-            'termlist': grpdict[i]
-        })
+    # Alphabetical order, one row per term
+    quick_ref_df = df.fillna(-1).sort_values(by='term_local_name', key=lambda s: s.str.lower())
 
     # Required values
-    terms_df = df[['namespace', 'term_local_name', 'label', 'class_name',
-                   'is_required', 'rdf_type']].sort_values(by=['class_name'])
+    terms_df = df[['namespace', 'term_local_name', 'label',
+                   'is_required', 'rdf_type']].sort_values(by='term_local_name', key=lambda s: s.str.lower())
 
     required_df = terms_df.loc[(terms_df['is_required'] == True) &
                                (terms_df['rdf_type'] == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property')]
@@ -251,7 +241,7 @@ def quickReference():
 
     return render_template('quick-reference.html',
                            headerMarkdown=Markup(marked_text),
-                           grplists=grplists,
+                           quickRefTerms=quick_ref_df,
                            requiredTerms=required_df,
                            requiredClasses=required_classes_df,
                            pageTitle='Quick Reference Guide',
