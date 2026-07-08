@@ -41,20 +41,16 @@ print(f'{duplicate_count} duplicate term records removed, {len(ltc_df)} unique t
 
 # Rename Columns
 ltc_df.rename(columns={'term_localName': 'term_local_name',
-                       'tdwgutility_organizedInClass': 'class_uri',
                        'tdwgutility_required': 'is_required',
                        'tdwgutility_repeatable': 'is_repeatable'}, inplace=True)
+
+# Terms are class-independent after deduplication; drop the organizing class
+ltc_df = ltc_df.drop(columns=['tdwgutility_organizedInClass'])
 # Fix boolean values
 ltc_df['is_required'] = ltc_df['is_required'].replace({'Yes': 'True'})
 ltc_df['is_required'] = ltc_df['is_required'].replace({'No': 'False'})
 ltc_df['is_repeatable'] = ltc_df['is_repeatable'].replace({'Yes': 'True'})
 ltc_df['is_repeatable'] = ltc_df['is_repeatable'].replace({'No': 'False'})
-# Derive class_name from the organizing class URI
-# term_local_name uniquely identifies each record after deduplication, so no
-# compound_name (class_name.term_local_name) column is created.
-ltc_df['class_name'] = ltc_df['class_uri'].str.replace('http://rs.tdwg.org/dwc/terms/attributes/', '')
-
-
 # Resave
 ltc_df.to_csv(term_csv, index=False, encoding='utf8')
 
@@ -97,9 +93,11 @@ ltc_df.to_csv(term_csv, index=False, encoding='utf8')
 # ------------------------------------------------------------
 # Datatypes
 dt_df = pd.read_csv(dt_csv, encoding='utf8')
-dt_df.rename(columns={'term_localName': 'term_local_name','tdwgutility_organizedInClass': 'class_name'}, inplace=True)
-# Datatypes repeat per organizing class but are identical per term, so
-# deduplicate on term_local_name to keep the terms merge one-to-one
+dt_df.rename(columns={'term_localName': 'term_local_name'}, inplace=True)
+# Datatypes are class-independent: they repeat per organizing class but are
+# identical per term, so drop the class column and deduplicate on
+# term_local_name to keep the terms merge one-to-one
+dt_df = dt_df.drop(columns=['tdwgutility_organizedInClass'])
 dt_df = dt_df.drop_duplicates(subset='term_local_name', keep='first')
 
 # Resave datatypes file

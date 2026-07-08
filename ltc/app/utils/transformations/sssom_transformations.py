@@ -21,9 +21,13 @@ sssom_df['term_local_name'] = sssom_df['term_local_name'].str.replace('http://rs
 sssom_df['term_local_name'] = sssom_df['term_local_name'].str.replace('https://schema.org/', '')
 sssom_df['term_local_name'] = sssom_df['term_local_name'].str.replace('http://rs.tdwg.org/chrono/terms/', '')
 
-# Create compound name to identify each term within the scope of a class
-sssom_df['compound_name'] = sssom_df[["subject_category", "term_local_name"]].apply(".".join, axis=1)
 # Create Term URI Column
 sssom_df['term_iri'] = sssom_df['subject_id']
+
+# Eliminate duplicate mappings: the same term/predicate/object mapping can be
+# recorded once per organizing class; the first occurrence is kept
+duplicate_count = int(sssom_df.duplicated(subset=['term_local_name', 'predicate_id', 'object_id']).sum())
+sssom_df = sssom_df.drop_duplicates(subset=['term_local_name', 'predicate_id', 'object_id'], keep='first')
+print(f'{duplicate_count} duplicate mapping records removed, {len(sssom_df)} unique mappings remain')
 
 sssom_df.to_csv(sssom_csv, index=False, encoding='utf8')
