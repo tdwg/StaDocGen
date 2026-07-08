@@ -131,29 +131,18 @@ def terms_fr():
         on=['term_local_name'], how='left'
     )
 
-    terms = terms_skos_df.sort_values(by=['class_name','term_local_name'])
+    # Alphabetical order, one row per term
+    terms = terms_skos_df.sort_values(by='term_local_name', key=lambda s: s.str.lower())
+    unique_terms_df = terms.drop_duplicates(subset='term_local_name')
 
-    # Unique Class Names
-    ltcCls = terms_df['class_name'].dropna().unique()
-
-    # Terms by Class
-    grpdict2 = terms_df.groupby('class_name')[['term_ns_name', 'term_local_name', 'namespace', 'term_version_iri','term_modified']].apply(
-        lambda g: list(map(tuple, g.values.tolist()))).to_dict()
-    termsByClass = []
-
-    for i in grpdict2:
-        termsByClass.append({
-            'class': i,
-            'termlist': grpdict2[i]
-        })
+    # Unique mappings for the SKOS mappings tables (repeats across organizing
+    # classes are dropped)
+    sssom_unique_df = sssom_df.drop_duplicates(subset=['term_local_name', 'predicate_id', 'object_id'])
 
     return render_template('term-list.html',
                            headerMarkdown=Markup(marked_text),
-                           ltcCls=ltcCls,
-                           terms=terms,
-                           sssom=sssom_df,
-                           termsByClass=termsByClass,
-                           uniqueTerms=terms,
+                           sssom=sssom_unique_df,
+                           uniqueTerms=unique_terms_df,
                            pageTitle='Term List',
                            title=meta['title'],
                            acronym=meta['acronym'],
@@ -199,29 +188,18 @@ def terms():
         on=['term_local_name'], how='left'
     )
 
-    terms = terms_skos_df.sort_values(by=['class_name','term_local_name'])
+    # Alphabetical order, one row per term
+    terms = terms_skos_df.sort_values(by='term_local_name', key=lambda s: s.str.lower())
+    unique_terms_df = terms.drop_duplicates(subset='term_local_name')
 
-    # Unique Class Names
-    ltcCls = terms_df['class_name'].dropna().unique()
-
-    # Terms by Class
-    grpdict2 = terms_df.groupby('class_name')[['term_ns_name', 'term_local_name', 'namespace', 'term_version_iri','term_modified']].apply(
-        lambda g: list(map(tuple, g.values.tolist()))).to_dict()
-    termsByClass = []
-
-    for i in grpdict2:
-        termsByClass.append({
-            'class': i,
-            'termlist': grpdict2[i]
-        })
+    # Unique mappings for the SKOS mappings tables (repeats across organizing
+    # classes are dropped)
+    sssom_unique_df = sssom_df.drop_duplicates(subset=['term_local_name', 'predicate_id', 'object_id'])
 
     return render_template('term-list.html',
                            headerMarkdown=Markup(marked_text),
-                           ltcCls=ltcCls,
-                           terms=terms,
-                           sssom=sssom_df,
-                           termsByClass=termsByClass,
-                           uniqueTerms=terms,
+                           sssom=sssom_unique_df,
+                           uniqueTerms=unique_terms_df,
                            pageTitle='Term List',
                            title=meta['title'],
                            acronym=meta['acronym'],

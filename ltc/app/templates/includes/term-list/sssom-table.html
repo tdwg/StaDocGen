@@ -35,7 +35,7 @@
                             <th class="col-w-4"></th>
                         </tr>
                         {%  for idx2,v2 in sssom.iterrows() %}
-                            {%  if v2['term_iri'] == v['term_iri'] and v2['subject_category'] == v['class_name'] %}
+                            {%  if v2['term_iri'] == v['term_iri'] %}
                                 <tr class="accordion-toggle collapsed"
                                     id="accordion{{ idx }}"
                                     data-bs-toggle="collapse"

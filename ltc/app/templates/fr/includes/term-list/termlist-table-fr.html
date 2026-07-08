@@ -7,11 +7,7 @@
                     <tr>
                         <th colspan="2">Nom du terme
                             <span class="title">
-                                {% if v['class_name'] == v['term_local_name'] %}
-                                    <span id="{{ v['class_name'] }}">{{ v['term_ns_name'] }}</span>
-                                {% else %}
-                                    <span id="{{ v['class_name'] }}_{{ v['term_local_name'] }}">{{ v['term_ns_name'] }}</span>
-                                {% endif %}
+                                <span id="{{ v['term_local_name'] }}">{{ v['term_ns_name'] }}</span>
                             </span>
                         </th>
                     </tr>
@@ -98,13 +94,6 @@
 						</tr>
 						{% endif %}
 
-
-						{%  if(v['rdf_type'] == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property') %}
-                        <tr>
-                            <th scope="row">Appartient à la Classe</th>
-                            <td>{{ v['class_name'] }}</td>
-                        </tr>
-                        {%  endif %}
 
 						{%  if(v['term_local_name'] != 'hasIdentifier') %}
 	                        <tr>
