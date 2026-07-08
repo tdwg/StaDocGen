@@ -11,7 +11,7 @@ from functools import reduce
 # Only languages specified in the translations.yml file will be generated
 # Workflow
 # latimer-translations.csv > ltc-<lang>-translations.csv > ltc-translations-termlist.csv
-# translation-transformations.py > terms-transformations.py
+# process_terms.py > translation_transformations.py
 
 namespace = 'ltc'
 current_dir = Path().absolute()
@@ -45,6 +45,13 @@ for k in meta['Languages']:
     combined_pattern = reduce(lambda x, y: f'{x}|{y}', patterns)
     lang_df = source_df.filter(regex=combined_pattern)
 
+    # Eliminate duplicate records based on term_local_name, following the same
+    # pattern as process_terms.py: usage notes are ignored and the first
+    # occurrence of each term is kept
+    duplicate_count = int(lang_df.duplicated(subset='term_local_name').sum())
+    lang_df = lang_df.drop_duplicates(subset='term_local_name', keep='first')
+    print(f'{lang}: {duplicate_count} duplicate translation records removed, {len(lang_df)} unique terms remain')
+
     translations_target = str(project_dir) + '/data/output/ltc-'+lang+'-translations.csv'
 
     lang_df.to_csv(translations_target, index=False, encoding='utf8')
@@ -71,9 +78,8 @@ for yf in glob.glob(translations_yml, recursive=True):
         translations_df = pd.read_csv(translations_source, encoding='utf8')
 
         # Merge Termlist with Translation
-        lang_init_df = pd.merge(ltc_df, translations_df[['term_local_name','label_'+lang,'definition_'+lang,'usage_'+lang,'notes_'+lang]], on='term_local_name', how='left')
-        lang_df = lang_init_df.drop_duplicates()
-        lang_df = lang_df.drop_duplicates()
+        # Both sides are unique on term_local_name, so the merge is one-to-one
+        lang_df = pd.merge(ltc_df, translations_df[['term_local_name','label_'+lang,'definition_'+lang,'usage_'+lang,'notes_'+lang]], on='term_local_name', how='left')
 
         # Save New Translation Termlist
         lang_df.to_csv( translations_target, index=False, encoding='utf8')
