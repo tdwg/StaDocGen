@@ -96,11 +96,7 @@
 
                         <tr>
 							<th scope="row">RDF Type</th>
-                            {%  if(v['rdf_type'] == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property')  %}
-                                <td class="property"><a href="{{ v['rdf_type'] }}">rdf:Property</a></td>
-                            {%  else %}
-                                <td class="class"><a href="{{ v['rdf_type'] }}">rdfs:Class</a></td>
-                            {%  endif %}
+                            <td class="property"><a href="{{ v['rdf_type'] }}">rdf:Property</a></td>
 						</tr>
 				</tbody>
 			</table>

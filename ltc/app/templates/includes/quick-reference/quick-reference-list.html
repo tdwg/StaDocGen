@@ -11,17 +11,10 @@
         <table class="table table-compact">
             <thead>
                 <tr>
-                    {%  if(k['rdf_type'] == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property') %}
                     <th class="property" colspan="2">
                         <span class="title">{{ k['term_ns_name'] }}</span>
                         <span class="badge badge-property float-end">Property</span>
                     </th>
-                    {%  else %}
-                    <th class="class" colspan="2">
-                        <span class="title">{{ k['term_ns_name'] }}</span>
-                        <span class="badge badge-class float-end">Class</span>
-                    </th>
-                    {%  endif %}
                 </tr>
             </thead>
             <tbody>

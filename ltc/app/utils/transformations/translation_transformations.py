@@ -1,6 +1,5 @@
 from pathlib import Path
 import pandas as pd
-import shutil
 import globals
 import glob
 import yaml
@@ -20,9 +19,6 @@ project_dir = str(root_dir) +'/'+namespace+'/app'
 translations_src = str(project_dir)+'/data/sources/latimer-translations.csv'
 translations_csv = str(project_dir)+'/data/output/latimer-translations.csv'
 
-# Create copies
-shutil.copy(translations_src, translations_csv)
-
 # Read translations YAML file
 translations_yml = str(root_dir)+'/'+namespace+'/app/utils/translations.yml'
 yml_dict = []
@@ -33,10 +29,17 @@ for yf in glob.glob(translations_yml, recursive=True):
 
 # -------------------------------------------------------
 
+# Create the output copy of the source translations. Classes are excluded from
+# the documentation outputs: the organizing class column is dropped and only
+# terms present in the (property-only) termlist are kept.
+ltc_terms = pd.read_csv(str(project_dir)+'/data/output/ltc-termlist.csv', encoding='utf8')['term_local_name']
 
-source_df = pd.read_csv(translations_csv, encoding="utf8", skip_blank_lines=True)
+source_df = pd.read_csv(translations_src, encoding="utf8", skip_blank_lines=True)
 source_df = source_df.rename(columns={'term_localName': 'term_local_name'})
+source_df = source_df.drop(columns=['tdwgutility_organizedInClass'])
+source_df = source_df[source_df['term_local_name'].isin(ltc_terms)]
 source_df = source_df.sort_values(by='term_local_name', axis='index', na_position='last')
+source_df.to_csv(translations_csv, index=False, encoding='utf8')
 for k in meta['Languages']:
 
     # Get language tag and filter columns in source translation file

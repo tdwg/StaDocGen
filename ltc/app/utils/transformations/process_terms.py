@@ -39,6 +39,11 @@ duplicate_count = int(ltc_df.duplicated(subset='term_localName').sum())
 ltc_df = ltc_df.drop_duplicates(subset='term_localName', keep='first')
 print(f'{duplicate_count} duplicate term records removed, {len(ltc_df)} unique terms remain')
 
+# Classes are excluded from the documentation outputs; keep property terms only
+class_count = int((ltc_df['rdf_type'] != 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property').sum())
+ltc_df = ltc_df[ltc_df['rdf_type'] == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property']
+print(f'{class_count} class records removed, {len(ltc_df)} property terms remain')
+
 # Rename Columns
 ltc_df = ltc_df.rename(columns={'term_localName': 'term_local_name',
                                 'tdwgutility_required': 'is_required',

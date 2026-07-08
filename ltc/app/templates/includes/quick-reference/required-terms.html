@@ -1,30 +1,8 @@
 <h3 id="requirements">Requirements</h3>
-<p>The tables below provides a summary of the required classes and terms in Latimer Core. Term requirements are subject to the use of the parent class where a term that belongs to an optional class are required if and only if, their parent class is in use.</p>
+<p>The table below provides a summary of the required terms in Latimer Core.</p>
 
 <div class="table-outer-wrapper">
-    <h5 class="table-header">Required Classes</h5>
     <div class="term-table-wrapper">
-        <div class="table-responsive print-avoid">
-            <table class="table table-compact table-terms">
-                <thead>
-                <tr>
-                    <th>Class</th>
-                    <th>Label</th>
-                    <th>Required</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for idx, v in requiredClasses.iterrows() %}
-                    <tr>
-                        <td><a href="#{{ v['term_local_name'] }}">{{ v['namespace'] }}{{ v['term_local_name'] }}</a></td>
-                        <td>{{ v['label'] }}</td>
-                        <td>{{ v['is_required'] }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
         <h5 class="table-header">Required Terms</h5>
         <div class="table-responsive print-avoid">
             <table class="table table-compact table-terms">

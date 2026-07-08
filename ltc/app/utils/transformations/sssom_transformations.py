@@ -24,6 +24,13 @@ sssom_df = sssom_df.assign(
         .str.replace('http://rs.tdwg.org/chrono/terms/', ''),
     term_iri=sssom_df['subject_id'])
 
+# Classes are excluded from the documentation outputs; drop mappings whose
+# subject is a class along with the class (subject_category) column
+class_count = int((sssom_df['subject_type'] == 'rdfs class').sum())
+sssom_df = sssom_df[sssom_df['subject_type'] != 'rdfs class']
+sssom_df = sssom_df.drop(columns=['subject_category'])
+print(f'{class_count} class mapping records removed')
+
 # Eliminate duplicate mappings: the same term/predicate/object mapping can be
 # recorded once per organizing class; the first occurrence is kept
 duplicate_count = int(sssom_df.duplicated(subset=['term_local_name', 'predicate_id', 'object_id']).sum())

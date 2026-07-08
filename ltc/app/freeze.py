@@ -232,18 +232,12 @@ def quickReference():
     terms_df = df[['namespace', 'term_local_name', 'label',
                    'is_required', 'rdf_type']].sort_values(by='term_local_name', key=lambda s: s.str.lower())
 
-    required_df = terms_df.loc[(terms_df['is_required'] == True) &
-                               (terms_df['rdf_type'] == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property')]
-
-    required_classes_df = terms_df.loc[(terms_df['is_required'] == True) &
-                           (terms_df['rdf_type'] == 'http://www.w3.org/2000/01/rdf-schema#Class')]
-
+    required_df = terms_df.loc[terms_df['is_required'] == True]
 
     return render_template('quick-reference.html',
                            headerMarkdown=Markup(marked_text),
                            quickRefTerms=quick_ref_df,
                            requiredTerms=required_df,
-                           requiredClasses=required_classes_df,
                            pageTitle='Quick Reference Guide',
                            title=meta['title'],
                            acronym=meta['acronym'],
