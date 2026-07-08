@@ -3,6 +3,7 @@ Sequence of csv transformations for the purposes of generating documentation fro
 
 ## Sequence
 Scripts must be run in a specific order to produce production files
+copy_source_files.py >
 sssom_transformations.py > process_terms.py > translation_transformations.py
 
 ### SKOS and SSSOM Mappings  
