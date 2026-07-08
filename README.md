@@ -59,11 +59,11 @@ I highly recommend using ConEmu https://conemu.github.io/ or Git Bash. You can a
 * Open command line window
 * Navigate to the root directory of this repository
 * Run the following commands
-  * $python -m venv .stadocgen-venv
+  * $python -m venv .venv-stadocgen
   * **Windows**:
-       * $.\.stadocgen-venv\Scripts\activate
+       * $.\.venv-stadocgen\Scripts\activate
   * **Mac/Linux**:
-       * $source .stadocgen-venv/bin/activate
+       * $source .venv-stadocgen/bin/activate
   * $pip install -r requirements.txt
 * To test pages, go to **Testing**
 * To build webpages for publication, go to **Build Documentation Pages**
@@ -74,7 +74,7 @@ I highly recommend using ConEmu https://conemu.github.io/ or Git Bash. You can a
 
 ### Testing
 * Open the command line window and navigate to the instance root directory (e.g. (root)/ltc)
-* Make sure the virtual environment is activated (conda activate stadcogen-venv or .\.stadocgen-venv\Scripts\activate)
+* Make sure the virtual environment is activated (.\.venv-stadocgen\Scripts\activate)
 * At the commend line, enter $flask run
 * Open a browser to localhost:5000
 * To end testing and stop the development server, press CTRL+C in the command line window

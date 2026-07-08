@@ -1,0 +1,121 @@
+<h2 id="6-vocabulary">6 Vocabulary</h2>
+  {% for k,v in uniqueTerms.iterrows() %}
+    <div class="term-table-wrapper">
+        <div class="table-responsive print-avoid">
+            <table class="table table-compact table-terms">
+                <thead>
+                    <tr>
+                        <th colspan="2">Term Name
+                            <span class="title">
+                                {% if v['class_name'] == v['term_local_name'] %}
+                                    <span id="{{ v['class_name'] }}">{{ v['term_ns_name'] }}</span>
+                                {% else %}
+                                    <span id="{{ v['class_name'] }}_{{ v['term_local_name'] }}">{{ v['term_ns_name'] }}</span>
+                                {% endif %}
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr>
+							<th scope="row">Term IRI</th>
+							<td>{{ v['term_iri']|urlize }}</td>
+						</tr>
+                        <tr>
+                            <th scope="row">Modified</th>
+                            <td>{{ v['term_modified'] }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Term Version IRI</th>
+                            <td>{{ v['term_version_iri']|urlize }}</td>
+                        </tr>
+						<tr>
+							<th scope="row">Label</th>
+							<td>{{ v['label'] }}</td>
+						</tr>
+						<tr>
+							<th scope="row">Definition</th>
+							<td>{{ v['definition'] }}</td>
+						</tr>
+
+						{% if v['usage'] is number %}
+						{% else %}
+						<tr>
+							<th scope="row">Usage</th>
+							<td>{{ v['usage'] }}</td>
+						</tr>
+						{% endif %}
+
+						{% if v['notes'] is number %}
+						{% else %}
+						<tr>
+							<th scope="row">Notes</th>
+							<td>{{ v['notes'] }}</td>
+						</tr>
+						{% endif %}
+
+						{% if v['examples'] is number %}
+						{% else %}
+						{% set list1 = v['examples'].split('`, `') %}
+						<tr>
+							<th scope="row">Examples</th>
+							<td>
+								<ul class="td-list">
+									{% for item in list1 %}
+										<li><span>{{ item|replace("`","") }}</span></li>
+									{% endfor %}
+								</ul>
+
+							</td>
+						</tr>
+
+						{% endif %}
+
+						{% if v['datatype'] is number %}
+						{% else %}
+						<tr>
+							<th scope="row">Datatype</th>
+                            {% if v['datatype'] %}
+								<td>{{ v['datatype'] }}</td>
+                            {% else %}
+                            	<td>array< self ></td>
+                            {%  endif %}
+						</tr>
+						{% endif %}
+
+
+						{%  if(v['rdf_type'] == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property') %}
+                        <tr>
+                            <th scope="row">Belongs to Class</th>
+                            <td>{{ v['class_name'] }}</td>
+                        </tr>
+                        {%  endif %}
+
+						{%  if(v['term_local_name'] != 'hasIdentifier') %}
+	                        <tr>
+								<th scope="row">Required</th>
+								<td>{{ v['is_required'] }}</td>
+							</tr>
+                        {%  endif %}
+
+						{%  if(v['term_local_name'] != 'hasIdentifier') %}
+                        <tr>
+							<th scope="row">Repeatable</th>
+							<td>{{ v['is_repeatable'] }}</td>
+						</tr>
+						{%  endif %}
+
+                        <tr>
+							<th scope="row">RDF Type</th>
+                            {%  if(v['rdf_type'] == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property')  %}
+                                <td class="property"><a href="{{ v['rdf_type'] }}">rdf:Property</a></td>
+                            {%  else %}
+                                <td class="class"><a href="{{ v['rdf_type'] }}">rdfs:Class</a></td>
+                            {%  endif %}
+						</tr>
+				</tbody>
+			</table>
+            {% include 'includes/term-list/sssom-table.html' %}
+        </div>
+    </div>
+{% endfor %}

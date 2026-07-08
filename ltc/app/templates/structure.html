@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block main %}
+<main>
+	{% include 'includes/global/page-header.html' %}
+	<a id="top"></a>
+	<div class="container content">
+		<div class="row">
+			<div class="col-lg-3 mx-auto">
+                {% if languageCode is not none %}
+                    {% if languageCode == 'en' %}
+        				{% include 'includes/structure/sidebar.html' %}
+                    {% else %}
+                        {% include languageCode+'/includes/structure/sidebar-'+languageCode+'.html' %}
+                    {% endif %}
+                {% endif %}
+			</div>
+			<div class="col-lg-9 order-lg-first mx-auto">
+			    <h1 id="ltc-list-of-terms">{{ title }} ({{ languageLabel|safe }})</h1>
+				<div class="content-header-wrapper">
+	                {{ headerMarkdown }}
+                    {{ translationDisclaimerHeader }}
+                    {{ translationDisclaimer }}
+				</div>
+                {% if languageCode is not none %}
+                    {% if languageCode == 'en' %}
+                        {% include 'includes/structure/termlist-index.html' %}
+                        {% include 'includes/structure/termlist-table.html' %}
+                    {% else %}
+                        {% include languageCode+'/includes/structure/termlist-index-'+languageCode+'.html' %}
+                        {% include languageCode+'/includes/structure/termlist-table-'+languageCode+'.html' %}
+                    {% endif %}
+                {% endif %}
+
+            </div>
+        </div>
+ 	</div>
+</main>
+
+{% endblock %}

@@ -1,9 +1,13 @@
 from pathlib import Path
 import pandas as pd
 import shutil
-import globals
-import glob
-import yaml
+
+# Process LtC Terms
+# Deduplicates the source terms on term_localName, then runs the terms
+# transformation sequence (merged in from the former terms_transformations.py).
+# Run from this directory: python process_terms.py
+# Sequence: sssom_transformations.py > process_terms.py > translation_transformations.py
+# Last Modified: 2026-07-08
 
 namespace = 'ltc'
 current_dir = Path().absolute()
@@ -27,6 +31,14 @@ shutil.copy(dt_src, dt_csv)
 # Terms
 ltc_df = pd.read_csv(term_csv, encoding="utf8")
 
+# Eliminate duplicate records
+# The same term_localName can appear once per organizing class, with rows
+# differing only in usage notes and tdwgutility_organizedInClass. Usage notes
+# are ignored; the first occurrence of each term_localName is kept.
+duplicate_count = int(ltc_df.duplicated(subset='term_localName').sum())
+ltc_df = ltc_df.drop_duplicates(subset='term_localName', keep='first')
+print(f'{duplicate_count} duplicate term records removed, {len(ltc_df)} unique terms remain')
+
 # Rename Columns
 ltc_df.rename(columns={'term_localName': 'term_local_name',
                        'tdwgutility_organizedInClass': 'class_uri',
@@ -37,9 +49,10 @@ ltc_df['is_required'] = ltc_df['is_required'].replace({'Yes': 'True'})
 ltc_df['is_required'] = ltc_df['is_required'].replace({'No': 'False'})
 ltc_df['is_repeatable'] = ltc_df['is_repeatable'].replace({'Yes': 'True'})
 ltc_df['is_repeatable'] = ltc_df['is_repeatable'].replace({'No': 'False'})
-# Create compound name column to uniquely identify each record
+# Derive class_name from the organizing class URI
+# term_local_name uniquely identifies each record after deduplication, so no
+# compound_name (class_name.term_local_name) column is created.
 ltc_df['class_name'] = ltc_df['class_uri'].str.replace('http://rs.tdwg.org/dwc/terms/attributes/', '')
-ltc_df['compound_name'] = ltc_df[["class_name", "term_local_name"]].apply(".".join, axis=1)
 
 
 # Resave
@@ -85,21 +98,15 @@ ltc_df.to_csv(term_csv, index=False, encoding='utf8')
 # Datatypes
 dt_df = pd.read_csv(dt_csv, encoding='utf8')
 dt_df.rename(columns={'term_localName': 'term_local_name','tdwgutility_organizedInClass': 'class_name'}, inplace=True)
-dt_df['compound_name'] = dt_df[["class_name", "term_local_name"]].apply(".".join, axis=1)
+# Datatypes repeat per organizing class but are identical per term, so
+# deduplicate on term_local_name to keep the terms merge one-to-one
+dt_df = dt_df.drop_duplicates(subset='term_local_name', keep='first')
 
 # Resave datatypes file
 dt_df.to_csv(dt_csv, index=False, encoding='utf8')
 
 # ------------------------------------------------------------
 # Merge Terms and Datatypes
-ltc_df = pd.merge(ltc_df, dt_df[['compound_name', 'datatype']], on='compound_name', how='left')
+ltc_df = pd.merge(ltc_df, dt_df[['term_local_name', 'datatype']], on='term_local_name', how='left')
 # Resave
 ltc_df.to_csv(term_csv, index=False, encoding='utf8')
-
-
-
-
-
-
-
-

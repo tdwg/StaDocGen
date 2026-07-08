@@ -1,3 +1,3 @@
 @echo off
-.\.stadocgen-venv\Scripts\activate
+.\.venv-stadocgen\Scripts\activate
 cd ltc

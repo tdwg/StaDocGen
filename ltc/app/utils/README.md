@@ -18,8 +18,8 @@ Scripts to generate schemas of source and target csv files
 4. The output from steps 3 and 4 will be stored under data/output. The website generator only uses data stored in the output directory. 
 Therefore, the transformation scripts are required before the documentation pages will show the source data changes.
 
-terms_transformations.py generates the transformed versions of the ltc source files
+process_terms.py deduplicates the source terms (on term_localName) and generates the transformed versions of the ltc source files
 sssom_transformations.py generates the transformed mappings 
 translation_transformations.py generates the translations
 
-terms-transformations.py > sssom_transformations.py > translation_transformations.py
+process_terms.py > sssom_transformations.py > translation_transformations.py

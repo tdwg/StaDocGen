@@ -3,7 +3,7 @@ Sequence of csv transformations for the purposes of generating documentation fro
 
 ## Sequence
 Scripts must be run in a specific order to produce production files
-sssom_transformations.py > terms_transformations.py > translation_transformations.py
+sssom_transformations.py > process_terms.py > translation_transformations.py
 
 ### SKOS and SSSOM Mappings  
 Transforms both mapping files  
@@ -18,6 +18,9 @@ Script:skos_transformations.py
 
 
 ### Terms
-Script: terms_transformations.py
+Script: process_terms.py
+Eliminates duplicate term records based on term_localName (usage notes are ignored; the first
+occurrence of each term is kept), then runs the terms transformations merged in from the
+former terms_transformations.py.
 
 
