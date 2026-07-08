@@ -1,17 +1,16 @@
 from pathlib import Path
 import pandas as pd
-import shutil
 
 namespace = 'ltc'
 current_dir = Path().absolute()
 path = current_dir.parent.parent
 
-# 1.  Create copy of source csv
+# Read the source csv directly; only the transformed, class-free mappings are
+# written to the output directory
 sssom_src = str(path)+'/data/sources/ltc_sssom_mapping.csv'
 sssom_csv = str(path)+'/data/output/ltc-sssom.csv'
-shutil.copy(sssom_src, sssom_csv)
 
-sssom_df = pd.read_csv(sssom_csv, encoding='utf8')
+sssom_df = pd.read_csv(sssom_src, encoding='utf8')
 sssom_df = sssom_df.rename(columns={'term_uri': 'term_iri'})
 # Create Term Column with Machine-readable version of the term
 # and the Term URI Column

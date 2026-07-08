@@ -130,7 +130,6 @@ dc:,rightsHolder,string
 ltc:,referenceDetails,string
 ltc:,referenceName,string
 ltc:,referenceType,string
-abcd:,resourceURI,string
 dwc:,relatedResourceID,string
 ltc:,relatedResourceName,string
 ltc:,relatedResourceType,string

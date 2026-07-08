@@ -1,10 +1,11 @@
 from pathlib import Path
 import pandas as pd
-import shutil
 
 # Process LtC Terms
-# Deduplicates the source terms on term_localName, then runs the terms
-# transformation sequence (merged in from the former terms_transformations.py).
+# Reads the source terms directly, deduplicates on term_localName, filters out
+# class records, then runs the terms transformation sequence (merged in from
+# the former terms_transformations.py). Sources are never copied verbatim to
+# the output directory, so classes never appear there.
 # Run from this directory: python process_terms.py
 # Sequence: sssom_transformations.py > process_terms.py > translation_transformations.py
 # Last Modified: 2026-07-08
@@ -13,23 +14,18 @@ namespace = 'ltc'
 current_dir = Path().absolute()
 path = current_dir.parent.parent
 
-# -------------------------------------------------------
-# Create copies
 term_src = str(path)+'/data/sources/ltc_terms_source.csv'
 term_csv = str(path)+'/data/output/ltc-termlist.csv'
-shutil.copy(term_src, term_csv)
 
 ns_src = str(path)+'/data/sources/ltc_namespaces.csv'
 ns_csv = str(path)+'/data/output/ltc-namespaces.csv'
-shutil.copy(ns_src, ns_csv)
 
 dt_src = str(path)+'/data/sources/ltc_datatypes.csv'
 dt_csv = str(path)+'/data/output/ltc-datatypes.csv'
-shutil.copy(dt_src, dt_csv)
 
 # -------------------------------------------------------
 # Terms
-ltc_df = pd.read_csv(term_csv, encoding="utf8")
+ltc_df = pd.read_csv(term_src, encoding="utf8")
 
 # Eliminate duplicate records
 # The same term_localName can appear once per organizing class, with rows
@@ -54,13 +50,12 @@ ltc_df = ltc_df.drop(columns=['tdwgutility_organizedInClass'])
 # Fix boolean values
 ltc_df = ltc_df.replace({'is_required': {'Yes': 'True', 'No': 'False'},
                          'is_repeatable': {'Yes': 'True', 'No': 'False'}})
-# Resave
+# Save
 ltc_df.to_csv(term_csv, index=False, encoding='utf8')
 
 # ------------------------------------------------------------
 # Namespaces
-# Get namespaces file
-ns_df = pd.read_csv(ns_csv, encoding="utf8")
+ns_df = pd.read_csv(ns_src, encoding="utf8")
 # Rename namespaces columns
 ns_df = ns_df.rename(columns={'curie': 'namespace', 'value': 'namespace_iri'})
 # Add colon to namespace for merger with terms csv
@@ -96,7 +91,7 @@ ltc_df.to_csv(term_csv, index=False, encoding='utf8')
 
 # ------------------------------------------------------------
 # Datatypes
-dt_df = pd.read_csv(dt_csv, encoding='utf8')
+dt_df = pd.read_csv(dt_src, encoding='utf8')
 dt_df = dt_df.rename(columns={'term_localName': 'term_local_name'})
 # Datatypes are class-independent: they repeat per organizing class but are
 # identical per term, so drop the class column and deduplicate on
@@ -104,7 +99,10 @@ dt_df = dt_df.rename(columns={'term_localName': 'term_local_name'})
 dt_df = dt_df.drop(columns=['tdwgutility_organizedInClass'])
 dt_df = dt_df.drop_duplicates(subset='term_local_name', keep='first')
 
-# Resave datatypes file
+# Datatypes for excluded (class) terms are not copied to the output
+dt_df = dt_df[dt_df['term_local_name'].isin(ltc_df['term_local_name'])]
+
+# Save datatypes file
 dt_df.to_csv(dt_csv, index=False, encoding='utf8')
 
 # ------------------------------------------------------------
