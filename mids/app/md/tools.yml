@@ -2,7 +2,7 @@
 # Tools Profiles for StaDocGen
 # mids/app/md
 # 
-# 2026-03-22
+# 2025-05-01
 tools:
   - title: "MIDS Calculator"
     description: "The MIDSCalculator is a Shiny app written in R, which allows users to calculate MIDS scores for each record in a submitted dataset, and explore the results. It supports data presented as Simple Darwin Core, Darwin Core Archives and ABCD Biocase archives (though processing of the latter is quite slow). The app is unfortunately not web-available, so it needs to be run on your local machine. This can be done using an R IDE like RStudio, but a Windows installer built with the Inno Setup framework is also periodically released."

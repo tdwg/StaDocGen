@@ -1,5 +1,10 @@
 import urllib.request
 import os
+import sys
+from pathlib import Path
+
+# Make the repo-root globals.py importable however the script is run (mids/app/utils -> repo root)
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 import globals as cfg
 
 '''
@@ -36,7 +41,8 @@ download_md_urls =  [
     "https://raw.githubusercontent.com/tdwg/mids/refs/heads/main/source/md/mids-levels-section-header.md",
     "https://raw.githubusercontent.com/tdwg/mids/refs/heads/main/source/md/resources-content.md",
     "https://raw.githubusercontent.com/tdwg/mids/refs/heads/main/source/md/sssom-reference.md",
-
+    "https://raw.githubusercontent.com/tdwg/mids/refs/heads/main/source/md/public_review/mids_public_review_landing_page.md",
+    "https://raw.githubusercontent.com/tdwg/mids/refs/heads/main/source/md/public_review/mids-public-review-participation-detailed.md",
     "https://raw.githubusercontent.com/tdwg/mids/refs/heads/main/source/resources/glossary.yml",
     "https://raw.githubusercontent.com/tdwg/mids/refs/heads/main/source/resources/tools.yml",
 ]

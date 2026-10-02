@@ -4,6 +4,19 @@ links:
   task_group:         "https://www.tdwg.org/community/cd/mids/"
   landing_page:       "https://tdwg.github.io/mids/index.html" # Initial version of the published docs from a fork of stadocgen
   github_repository:  "https://github.com/tdwg/mids"
+tdwg_process_links:   # TDWG process and specification links shown on the Public Review page
+  - label:        "TDWG Process"
+    url:          "https://www.tdwg.org/about/process/"
+    description:  "How TDWG Interest Groups and Task Groups develop and maintain standards."
+  - label:        "Ratification of Standards"
+    url:          "https://www.tdwg.org/about/process/#ratification-of-standards"
+    description:  "The public review and Executive Committee ratification steps a draft standard follows."
+  - label:        "Standards Documentation Standard (SDS)"
+    url:          "https://www.tdwg.org/standards/sds/"
+    description:  "The TDWG specification for how standards and their documentation are structured."
+  - label:        "Vocabulary Maintenance Standard (VMS)"
+    url:          "https://www.tdwg.org/standards/vms/"
+    description:  "The TDWG specification for how vocabulary standards are maintained after ratification."
 sources:
   tabulated:
     - "https://raw.githubusercontent.com/tdwg/mids/refs/heads/main/source/terms/information_elements/mids_information_elements_draft.csv"

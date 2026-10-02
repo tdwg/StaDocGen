@@ -6,9 +6,39 @@
 	<div class="container content">
 		<div class="row">
             <div class="col-md-12 col-lg-10 mx-auto">
-                <h2><span style="color:red">DRAFT</span></h2>
-                {{ home_markdown }}
-                <p><em>Last Modified: {{ lastModified }}</em></p>
+                <div class="home-layout{{ ' has-figure' if public_review.figure }}">
+                    <section class="review-panel" aria-labelledby="review-panel-title">
+                        <div class="review-panel-header">
+                            <span class="review-status">Open for comment</span>
+                            <h2 id="review-panel-title">{{ public_review.title }}</h2>
+                        </div>
+                        <div class="review-panel-intro">
+                            {{ public_review.intro }}
+                        </div>
+                        {% for section in public_review.sections %}
+                        <details class="review-section">
+                            <summary>{{ section.heading }}</summary>
+                            <div class="review-section-body">
+                                {{ section.body }}
+                            </div>
+                        </details>
+                        {% endfor %}
+                        <p class="review-panel-more">
+                            <a href="{{ url_for('public_review') }}">Full public review instructions and TDWG process &rarr;</a>
+                        </p>
+                    </section>
+
+                    {% if public_review.figure %}
+                    <aside class="home-figure">
+                        {{ public_review.figure }}
+                    </aside>
+                    {% endif %}
+
+                    <article class="home-main doc-prose">
+                        {{ home_markdown }}
+                        <p class="last-modified">Last Modified: {{ lastModified }}</p>
+                    </article>
+                </div>
             </div>
         </div>
     </div>

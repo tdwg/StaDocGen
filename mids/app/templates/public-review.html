@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block main %}
+<main class="docs-public-review">
+	{% include 'includes/global/page-header.html' %}
+    <a id="top"></a>
+	<div class="container content">
+		<div class="row">
+          <div class="col-md-12 col-lg-10 mx-auto">
+           <div class="row">
+            <div class="col-lg-3">
+                {% include 'includes/public-review/sidebar.html' %}
+            </div>
+            <div class="col-lg-9 order-lg-first">
+                <article class="doc-prose">
+                    {{ public_review_detailed_markdown }}
+
+                    <h2 id="tdwg-ratification-process">TDWG Ratification Process</h2>
+                    <p>The MIDS public review is part of the TDWG process for developing and ratifying standards. The following documents describe that process and the specifications MIDS is expected to follow.</p>
+                    <ul class="process-link-list">
+                        {% for link in tdwg_process_links %}
+                        <li>
+                            <a href="{{ link.url }}">{{ link.label }}</a>
+                            <span>{{ link.description }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <p class="last-modified">Last Modified: {{ lastModified }}</p>
+                </article>
+            </div>
+           </div>
+          </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

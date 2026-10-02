@@ -27,11 +27,17 @@
                        href="{{ url_for('resources') }}">Resources</a>
 				</li>
                 <li class="navbar-item">
+					<a class="nav-link {{ 'nav-link-active' if slug == 'public-review' }}"
+                       href="{{ url_for('public_review') }}">Public Review</a>
+				</li>
+                <li class="navbar-item">
 					<a class="nav-link {{ 'nav-link-active' if slug == 'about' }}"
                        href="{{ url_for('about') }}">About</a>
 				</li>
 				<li class="navbar-item">
-					<a class="nav-link" href="{{ githubRepo }}">{{  acronym  }} GitHub</a>
+					<a class="nav-link nav-link-github" href="{{ githubRepo }}" title="{{ acronym }} GitHub" aria-label="{{ acronym }} GitHub">
+                        <i class="fab fa-github" aria-hidden="true"></i><span class="d-lg-none ms-2">{{ acronym }} GitHub</span>
+                    </a>
 				</li>
             </ul>
 		</div>

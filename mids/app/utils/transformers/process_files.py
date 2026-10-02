@@ -1,8 +1,12 @@
+import sys
+from pathlib import Path
+
+# Make the repo-root globals.py importable however the script is run (mids/app/utils/transformers -> repo root)
+sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
 from globals import get_project_root
 import pandas as pd
 import shutil
 from datetime import date
-from pathlib import Path
 import os
 
 # Process Source Files

@@ -1,4 +1,5 @@
 import json
+import re
 
 from flask import Flask, render_template, jsonify, Response
 from flask_frozen import Freezer
@@ -11,7 +12,7 @@ from datetime import date
 app = Flask(__name__, template_folder='templates')
 freezer = Freezer(app)
 
-#app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['TEMPLATES_AUTO_RELOAD'] = True  # pick up template edits without restarting the dev server
 app.config['FREEZER_DESTINATION'] = 'build'
 app.config['FREEZER_RELATIVE_URLS'] = True
 #app.config['FREEZER_IGNORE_MIMETYPE_WARNINGS'] = True
@@ -32,13 +33,53 @@ def internal_error(error):
     return render_template('500.html',
                            pageTitle='500 Unknown Error'), 500
 
+# A markdown image followed on the next line by its caption/attribution, e.g.
+#   ![alt text](custom/images/x.jpg)
+#   Caption. Image: [Title](commons-url) by Author, [License](license-url), via Wikimedia Commons.
+# Image paths are relative to the static folder.
+FIGURE_RE = re.compile(r'<p><img src="(?!https?:)([^"]+)" alt="([^"]*)"\s*/?>\s*(.*?)</p>', flags=re.S)
+
+def render_figures(html, static_prefix):
+    """Convert markdown image + caption paragraphs into figures. static_prefix is the page's relative path to static/."""
+    return FIGURE_RE.sub(
+        lambda m: ('<figure class="doc-figure"><img src="{0}{1}" alt="{2}" loading="lazy">'
+                   '<figcaption>{3}</figcaption></figure>').format(static_prefix, m.group(1), m.group(2), m.group(3).strip()),
+        html)
+
+def highlight_section(html, heading_id):
+    """Wrap the h2 section with the given id (up to the next h2) in a highlighted block."""
+    return re.sub(r'(<h2 id="' + re.escape(heading_id) + r'">.*?)(?=<h2[ >]|\Z)',
+                  r'<section class="review-highlight">\1</section>\n', html, count=1, flags=re.S)
+
+def split_review_sections(html):
+    """Split rendered public review markdown into title, figure, intro, and (heading, body) sections at each h3."""
+    title = 'Public Review'
+    h2 = re.search(r'<h2[^>]*>(.*?)</h2>', html, flags=re.S)
+    if h2:
+        title = h2.group(1).strip()
+        html = html[:h2.start()] + html[h2.end():]
+    # The first figure is shown beside the page content rather than inside the panel
+    figure = ''
+    fig = re.search(r'<figure class="doc-figure">.*?</figure>', html, flags=re.S)
+    if fig:
+        figure = fig.group(0)
+        html = html[:fig.start()] + html[fig.end():]
+    parts = re.split(r'<h3[^>]*>(.*?)</h3>', html, flags=re.S)
+    intro = parts[0].strip()
+    sections = [{'heading': Markup(parts[i].strip()), 'body': Markup(parts[i + 1].strip())}
+                for i in range(1, len(parts), 2)]
+    return {'title': Markup(title), 'figure': Markup(figure), 'intro': Markup(intro), 'sections': sections}
+
 @app.route('/')
 def home():
     today = date.today()
     lastModified = today.strftime("%Y-%m-%d")
     home_mdfile = str(relpath) + 'md/home-content.md'
+    public_review_mdfile = str(relpath) + 'md/mids-public-review-landing-page.md'
     with open(home_mdfile, encoding="utf8") as f:
         marked_text = markdown2.markdown(f.read(), extras=["tables", "fenced-code-blocks"])
+    with open(public_review_mdfile, encoding="utf8") as f:
+        marked_public_review_text = markdown2.markdown(f.read(), extras=["tables", "fenced-code-blocks", "header-ids"])
     return render_template('home.html',
                            home_markdown=Markup(marked_text),
                            pageTitle='Home',
@@ -47,7 +88,8 @@ def home():
                            landingPage=meta['links']['landing_page'],
                            githubRepo=meta['links']['github_repository'],
                            slug='home',
-                           lastModified=lastModified
+                           lastModified=lastModified,
+                           public_review=split_review_sections(render_figures(marked_public_review_text, 'static/'))
                            )
 
 @app.route('/information-elements/')
@@ -203,6 +245,30 @@ def about():
         githubRepo=meta['links']['github_repository'],
         slug='about')
 
+
+@app.route('/public-review/')
+def public_review():
+    lastModified = date.today().strftime("%Y-%m-%d")
+    public_review_mdfile = str(relpath) + 'md/mids-public-review-participation-detailed.md'
+    with open(public_review_mdfile, encoding="utf8") as f:
+        marked_text = markdown2.markdown(f.read(), extras=["tables", "fenced-code-blocks", "header-ids"])
+    marked_text = render_figures(marked_text, '../static/')
+    marked_text = highlight_section(marked_text, 'what-is-under-review')
+    # Build the sidebar table of contents from the h2 headings
+    toc = [{'id': m.group(1), 'label': Markup(m.group(2).strip())}
+           for m in re.finditer(r'<h2 id="([^"]+)">(.*?)</h2>', marked_text, flags=re.S)]
+
+    return render_template('public-review.html',
+                           public_review_detailed_markdown=Markup(marked_text),
+                           toc=toc,
+                           tdwg_process_links=meta['tdwg_process_links'],
+                           pageTitle='Public Review',
+                           title=meta['title'],
+                           acronym=meta['acronym'],
+                           landingPage=meta['links']['landing_page'],
+                           githubRepo=meta['links']['github_repository'],
+                           slug='public-review',
+                           lastModified=lastModified)
 
 #API Requests for Table Filters
 @app.route('/api/data.json')
