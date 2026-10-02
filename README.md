@@ -75,7 +75,7 @@ I highly recommend using ConEmu https://conemu.github.io/ or Git Bash. You can a
 ### Testing
 * Open the command line window and navigate to the instance root directory (e.g. (root)/ltc)
 * Make sure the virtual environment is activated (conda activate stadcogen-venv or .\.stadocgen-venv\Scripts\activate)
-* At the commend line, enter $flask run
+* At the cmd line, enter $flask run
 * Open a browser to localhost:5000
 * To end testing and stop the development server, press CTRL+C in the command line window
 
@@ -85,7 +85,7 @@ I highly recommend using ConEmu https://conemu.github.io/ or Git Bash. You can a
 * Copy the entire contents of the build directory (/app/build) to the docs folder in the target repository
 * Publish changes using the appropriate GitHub workflow
 
-In Windows, robocopy can be used to replace files in a target directory with a source. The following command will accomplish this task (before using, make sure to update the paths)  
+Using Windows, robocopy can be used to replace files in a target directory with a source. The following command will accomplish this task (before using, make sure to update the paths)  
 robocopy C:\repos\stadocgen\app\build G:\repos\ltc\docs /mir
 Once the new build is pushed to the target repo, continue the standard protocol for updating a repository (create new branch with updated docs > pull request > approve > merge).  
 
