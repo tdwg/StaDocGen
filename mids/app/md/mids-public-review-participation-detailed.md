@@ -62,7 +62,7 @@ You can comment through GitHub or through the MIDS feedback workbook. Both count
       - **Rationale / Comment** — why the change is needed, with use cases or references.
       - **Related GitHub Issue** (optional) — a link if you know of one.
    6. To propose a new discipline, level, element, or schema assignment, use the **grey rows** at the bottom of the relevant sheet.
-   7. Send your completed workbook to Sharon Grant at [sgrant@fieldmuseum.org](mailto:sgrant@fieldmuseum.org), either as an attached .xlsx file or by sharing your Google copy with her. Suggested subject line: *MIDS public review feedback – [Your name]*.
+   7. Send your completed workbook to [mids@geospecimens.org](mailto:mids@geospecimens.org), either as an attached .xlsx file or by sharing your Google copy with that address. Suggested subject line: *MIDS public review feedback – [Your name]*.
 
 5. **Ask questions or comment anonymously.** Email the review manager at [sgrant@fieldmuseum.org](mailto:sgrant@fieldmuseum.org) with any questions about the review. If you have trouble using GitHub, you can also email comments directly. If you wish to remain anonymous, say so explicitly in your email; your name and any identifying information will be removed before your comments are added to the public record.
 

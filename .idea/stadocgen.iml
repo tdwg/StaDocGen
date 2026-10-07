@@ -13,7 +13,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.stadocgen-venv" />
       <excludeFolder url="file://$MODULE_DIR$/.venv-stadocgen" />
     </content>
-    <orderEntry type="jdk" jdkName="G:\repos\tdwg\stadocgen\.venv-stadocgen" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="G:\repos\tdwg\stadocgen\.stadocgen-venv" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">
