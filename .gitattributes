@@ -1,0 +1,28 @@
+# Normalize text files to LF in the repo and in the working tree on every OS,
+# overriding any core.autocrlf setting (e.g. Git for Windows' system default).
+* text=auto eol=lf
+
+# Windows batch files need CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.xlsx binary
+*.xlsm binary
+*.eot binary
+*.ttf binary
+*.woff binary
+*.woff2 binary
+
+# These TSVs are committed with CRLF and freeze.py parses some of them with
+# lineterminator='\r'; keep them byte-for-byte as committed.
+mids/app/data/output/discipline_terms.tsv -text
+mids/app/data/output/examples.tsv -text
+mids/app/data/output/mappings.tsv -text
+mids/app/data/output/master-list.tsv -text
