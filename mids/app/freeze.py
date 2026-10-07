@@ -142,7 +142,10 @@ def information_elements():
     # Schemas
     schemas_tsv = str(relpath) + 'data/output/schemas.tsv'
     schemas_df = pd.read_csv(schemas_tsv, sep='\t', lineterminator='\n', encoding='utf-8')
-    schemas = schemas_df.sort_values(by=['level', 'informationElement'])
+    # File may have CRLF line endings; strip the trailing \r from the last column's header and values
+    schemas_df.columns = schemas_df.columns.str.strip()
+    schemas_df['identifier'] = schemas_df['identifier'].str.strip()
+    schemas =schemas_df.sort_values(by=['level', 'informationElement'])
 
     # Schemas by Level
     schemas_grpdict = schemas_df.groupby('level')[
