@@ -3,7 +3,7 @@
   <component name="Black">
     <option name="sdkName" value="stadocgen-env" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.13 virtualenv at G:\repos\tdwg\stadocgen\.stadocgen-venv" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="G:\repos\tdwg\stadocgen\.venv-stadocgen" project-jdk-type="Python SDK" />
   <component name="PyCharmDSProjectLayout">
     <option name="id" value="JupyterRightHiddenStructureLayout" />
   </component>
