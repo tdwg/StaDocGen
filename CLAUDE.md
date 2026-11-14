@@ -50,7 +50,7 @@ Data refresh pipeline (per instance, before building):
 - MinExt: `copy_source_files.py` then `utils/transformations/terms_transformations.py` (column header requirements in `minext/README.md`).
 - LtC: scripts in `ltc/app/utils/file-utils/` and `ltc/app/utils/transformations/`. The translation workflow requires manual cleanup (see `ltc/app/Translations-README.md`).
 
-Publishing: copy the contents of `<ns>/app/build/` into the `docs/` folder of the standard's own repo (e.g. `robocopy <ns>\app\build <target>\docs /mir`), then PR there.
+Publishing: `python publish_build.py <ns>` (add `--dry-run` to preview). It pulls the target repo (path from `<NS>_REPO` in `.env`, see `.env.example`), zips the current `docs/` to `backups/<ns>/`, then replaces `docs/` with `<ns>/app/build/`. It never touches the target's `docs/CNAME`. It doesn't commit; review and PR in the standard's repo.
 
 ## Conventions and gotchas
 

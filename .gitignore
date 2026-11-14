@@ -254,3 +254,6 @@ Desktop.ini
 /.idea
 /.idea
 tdwg-metadata/~$tdwg-metadata-fields.xlsm
+
+# publish_build.py docs backups
+backups/
